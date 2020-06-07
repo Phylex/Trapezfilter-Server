@@ -1,6 +1,9 @@
 use std::thread;
 use std::net::{TcpListener, TcpStream, Shutdown};
 use std::io::{Read, Write};
+use moessbauer_server::Config;
+use std::env;
+use std::process;
 
 fn handle_client(mut stream: TcpStream) {
     let mut data = [0 as u8; 50];
@@ -18,8 +21,11 @@ fn handle_client(mut stream: TcpStream) {
 }
 
 fn main() {
-
-    let listener = TcpListener::bind("127.0.0.1:3333").unwrap();
+    let config = Config::new(env::args()).unwrap_or_else(|err| {
+        eprintln!("Problem parsing arguments: {}", err);
+        process::exit(1);
+    });
+    let listener = TcpListener::bind(config.socket).unwrap();
     println!("Server listening on port 3333");
 
     for stream in listener.incoming() {
