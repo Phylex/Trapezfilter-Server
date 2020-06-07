@@ -4,12 +4,16 @@ use std::io::{Read, Write};
 use moessbauer_server::Config;
 use std::env;
 use std::process;
+use std::str;
 
 fn handle_client(mut stream: TcpStream) {
     let mut data = [0 as u8; 50];
     while match stream.read(&mut data) {
         Ok(size) => {
             stream.write(&data[0..size]).unwrap();
+            if str::from_utf8(&data[..size]).unwrap().ends_with("end") {
+                stream.shutdown(Shutdown::Both).unwrap();
+            }
             true
         },
         Err(_) => {
