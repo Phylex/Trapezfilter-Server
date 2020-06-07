@@ -26,7 +26,7 @@ fn main() {
         process::exit(1);
     });
     let listener = TcpListener::bind(config.socket).unwrap();
-    println!("Server listening on port 3333");
+    println!("Server listening on port {}", config.socket.port());
 
     for stream in listener.incoming() {
         match stream {
