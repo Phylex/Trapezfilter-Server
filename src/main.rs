@@ -14,10 +14,11 @@ fn handle_client(mut stream: TcpStream) {
                 stream.write(&data[0..size]).unwrap();
                 stream.flush().unwrap();
                 stream.shutdown(Shutdown::Both).unwrap();
+                false
             } else {
                 stream.write(&data[0..size]).unwrap();
+                true
             }
-            true
         },
         Err(_) => {
             println!("An error occurred, terminating connection with {}", stream.peer_addr().unwrap());
