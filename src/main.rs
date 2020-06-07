@@ -10,9 +10,12 @@ fn handle_client(mut stream: TcpStream) {
     let mut data = [0 as u8; 50];
     while match stream.read(&mut data) {
         Ok(size) => {
-            stream.write(&data[0..size]).unwrap();
             if str::from_utf8(&data[..size]).unwrap().ends_with("end") {
+                stream.write(&data[0..size]).unwrap();
+                stream.flush().unwrap();
                 stream.shutdown(Shutdown::Both).unwrap();
+            } else {
+                stream.write(&data[0..size]).unwrap();
             }
             true
         },
