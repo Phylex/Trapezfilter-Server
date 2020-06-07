@@ -1,5 +1,5 @@
 [package]
-name = "trapezfilter_server"
+name = "moessbauer_server"
 version = "0.1.0"
 authors = ["Alexande Becker <becker.alexander42@gmail.com>"]
 edition = "2018"
