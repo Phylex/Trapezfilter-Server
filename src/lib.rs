@@ -1,8 +1,27 @@
 use std::env::Args;
 use std::net::SocketAddr;
+use std::fs::File;
+use std::io::prelude::*;
+use std::path::Path;
+
+pub fn read_test_data(fpath: &str) -> Vec<u8> {
+    let path = Path::new(fpath);
+    let display = path.display();
+
+    //Open the path in read-only mode returns `io::Result<File>`
+    let mut file = match File::open(&path) {
+        Err(why) => panic!("Could not read {}: {}", display, why),
+        Ok(file) => file,
+    };
+    let mut data = Vec::new();
+    file.read_to_end(&mut data).unwrap();
+    data
+}
+
 
 pub struct Config {
     pub socket: SocketAddr,
+    pub test_data_path: String,
 }
 
 impl Config {
@@ -17,6 +36,11 @@ impl Config {
                 }},
             None => return Err("No Socket Address was given"),
         };
-        Ok(Config { socket })
+
+        let test_data_path = match args.next() {
+            Some(arg) => arg,
+            None => return Err("No path to test data given"),
+        };
+        Ok(Config { socket, test_data_path })
     }
 }

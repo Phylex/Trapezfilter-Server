@@ -1,7 +1,9 @@
+extern crate moessbauer_data;
+use moessbauer_data::*;
 use std::thread;
 use std::net::{TcpListener, TcpStream, Shutdown};
 use std::io::{Read, Write};
-use moessbauer_server::Config;
+use moessbauer_server::*;
 use std::env;
 use std::process;
 use std::str;
@@ -33,6 +35,18 @@ fn main() {
         eprintln!("Problem parsing arguments: {}", err);
         process::exit(1);
     });
+
+    let test_data = read_test_data(&config.test_data_path[..]);
+    let peak_cnt = (test_data.len()/12) as usize;
+    println!("Read in {} test peaks", peak_cnt);
+    
+    // the peak data now has to be decoded and turned into the "peak" data structure
+    let mut test_peaks: Vec<MeasuredPeak> = Vec::new();
+    for i in 0..peak_cnt {
+        test_peaks.push(MeasuredPeak::new(&test_data[i*12..(i+1)*12]))
+    }
+
+
     let listener = TcpListener::bind(config.socket).unwrap();
     println!("Server listening on port {}", config.socket.port());
 
