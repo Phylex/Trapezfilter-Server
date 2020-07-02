@@ -8,3 +8,4 @@ edition = "2018"
 
 [dependencies]
 moessbauer_data = { path = "../moessbauer_data" }
+crossbeam = "0.7.3"
